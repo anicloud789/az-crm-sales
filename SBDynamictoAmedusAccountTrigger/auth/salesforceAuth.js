@@ -14,13 +14,15 @@ const salesforceConfig = {
 
 const authenticatSFTokenRequest = async () => {
     try {
+        const kVSalesClientID = await keyVaultCLient.getSecret('kv-sales-client-id');
         const kVSalesClientSecret = await keyVaultCLient.getSecret('kv-sales-client-secret');
+        const kVSalesClientRefreshToken = await keyVaultCLient.getSecret('kv-sales-client-refreshToken');
         const response = await axios.post(`${salesforceConfig.instanceUrl}/services/oauth2/token`, null, {
             params: {
                 grant_type: 'refresh_token',
-                client_id: kVSalesClientSecret.clientId,
+                client_id: kVSalesClientID.value,
                 client_secret: kVSalesClientSecret.value,
-                refresh_token: salesforceConfig.refreshToken,
+                refresh_token: kVSalesClientRefreshToken.value,
             },
         });
 
